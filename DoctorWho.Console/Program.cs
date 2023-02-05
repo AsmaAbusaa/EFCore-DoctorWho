@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using DoctorWho.Db;
 using DoctorWho.Db.DataModels;
+using System.Data;
 
 using (DoctorWhoCoreDbContext doctorWhoCoreDbContext = new DoctorWhoCoreDbContext())
 {
@@ -18,5 +19,14 @@ using (DoctorWhoCoreDbContext doctorWhoCoreDbContext = new DoctorWhoCoreDbContex
 //        Console.WriteLine(e.DoctorName);
 //    var state = context.ChangeTracker.DebugView.ShortView;
 //}
+
+print();
+void print()
+{
+    using var context=new DoctorWhoCoreDbContext();
+    var e=context.Database.ExecuteSqlRaw("EXEC spSummariseEpisodes");
+    Console.WriteLine(e);
+
+}
 
 
