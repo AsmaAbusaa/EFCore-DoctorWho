@@ -20,13 +20,3 @@ using (DoctorWhoCoreDbContext doctorWhoCoreDbContext = new DoctorWhoCoreDbContex
 //    var state = context.ChangeTracker.DebugView.ShortView;
 //}
 
-print();
-void print()
-{
-    using var context=new DoctorWhoCoreDbContext();
-    var e=context.Database.ExecuteSqlRaw("EXEC spSummariseEpisodes");
-    Console.WriteLine(e);
-
-}
-
-
