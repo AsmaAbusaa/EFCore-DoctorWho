@@ -19,16 +19,4 @@ using (DoctorWhoCoreDbContext doctorWhoCoreDbContext = new DoctorWhoCoreDbContex
 //    var state = context.ChangeTracker.DebugView.ShortView;
 //}
 
-////AddDoctors();
-//void AddDoctors()
-//{
-//    using var context=new DoctorWhoCoreDbContext();
-//     context.Doctors.AddRange(
-// new Doctor {  DoctorNumber = 1, DoctorName = "William Hartnell", BirthDate = DateTime.Now.Date, FirstEpisodeDate = DateTime.Now.Date, LastEpisodeDate = DateTime.Now.Date },
-// new Doctor { DoctorNumber = 2, DoctorName = "Peter Capaldi", BirthDate = DateTime.Now.Date, FirstEpisodeDate = DateTime.Now.Date, LastEpisodeDate = DateTime.Now.Date },
-// new Doctor { DoctorNumber = 3, DoctorName = "Jon Pertwee", BirthDate = DateTime.Now.Date, FirstEpisodeDate = DateTime.Now.Date, LastEpisodeDate = DateTime.Now.Date },
-// new Doctor { DoctorNumber = 4, DoctorName = "Patrick Troughton", BirthDate = DateTime.Now.Date, FirstEpisodeDate = DateTime.Now.Date, LastEpisodeDate = DateTime.Now.Date },
-// new Doctor {  DoctorNumber = 5, DoctorName = "Sylvester McCoy", BirthDate = DateTime.Now.Date, FirstEpisodeDate = DateTime.Now.Date, LastEpisodeDate = DateTime.Now.Date }
-// );
-//    context.SaveChanges();
-//}
+
