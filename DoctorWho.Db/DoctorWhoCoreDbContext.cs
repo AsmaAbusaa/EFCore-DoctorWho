@@ -1,6 +1,6 @@
 ﻿using DoctorWho.Db.DataModels;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using System.Data.Entity.Core.Objects;
 
 namespace DoctorWho.Db;
 public class DoctorWhoCoreDbContext : DbContext
@@ -10,18 +10,38 @@ public class DoctorWhoCoreDbContext : DbContext
     public DbSet<Doctor> Doctors { get; set; }
     public DbSet<Companion> Companions { get; set; }
     public DbSet<Enemy> Enemies { get; set; }
+    public DbSet<ReportEpisode> viewReport { get; set; }
+
+
+    //private static ObjectContext CreateObjectContext()
+    //{
+    //    var entityBuilder = new EntityConnectionStringBuilder();
+
+    //    entityBuilder.Provider = "System.Data.SqlClient";
+    //    entityBuilder.ProviderConnectionString = "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = DoctorWhoCore";
+    //    entityBuilder.Metadata = @"metadata=res://*/Model.SMCSModel.csdl|res://*/Model.SMCSModel.ssdl|res://*/Model.SMCSModel.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=SANDIEGO\sql2008;initial catalog=SCMS;integrated security=True;multipleactiveresultsets=True;application name=EntityFramework&quot;";
+    //    return new ObjectContext(entityBuilder.ToString());
+    //}
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer(
           "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = DoctorWhoCore"
-        ).LogTo(Console.WriteLine,
-                    new[] { DbLoggerCategory.Database.Command.Name },
-                    LogLevel.Information)
-            .EnableSensitiveDataLogging();
+        );
+        //        .LogTo(Console.WriteLine,
+        //                new[] { DbLoggerCategory.Database.Command.Name },
+        //                LogLevel.Information)
+        //        .EnableSensitiveDataLogging();
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<ReportEpisode>().HasNoKey().ToView("viewReport");
+
+        //modelBuilder.HasDbFunction(typeof(DoctorWhoCoreDbContext)
+        //            .GetMethod(nameof(GetEnemiesByEpisodeId), new[] { typeof(int) }))
+        //            .HasName("fnEnemies");
+
         List<Doctor> doctors = new List<Doctor>
         {
             new Doctor { DoctorId=200, DoctorNumber = 1, DoctorName = "William Hartnell", BirthDate = DateTime.Now.Date, FirstEpisodeDate = DateTime.Now.Date, LastEpisodeDate = DateTime.Now.Date },
@@ -68,7 +88,7 @@ public class DoctorWhoCoreDbContext : DbContext
             entity.Property(t => t.EpisodeType).HasDefaultValue("Episode Type");
         });
 
-      
+
         List<Episode> episodes = new List<Episode>
         {
             new Episode{EpisodeId=300,SeriesNumber=1,EpisodeNumber=2,Title="The Forest of Fear",EpisodeDate=new DateTime(1963,12,14),AuthorId=1002,DoctorId=200},
@@ -80,4 +100,11 @@ public class DoctorWhoCoreDbContext : DbContext
         modelBuilder.Entity<Episode>().HasData(episodes);
 
     }
+    [DbFunction("fnEnemies", "dbo")]
+    public static string GetEnemiesByEpisodeId(int id) => throw new NotSupportedException();
+
+    [DbFunction("fnCompanions", "dbo")]
+    public static string GetCompanionsByEpisodeId(int id) => throw new NotSupportedException();
+
+
 }
