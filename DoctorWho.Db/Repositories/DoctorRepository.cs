@@ -6,23 +6,23 @@ namespace DoctorWho.Db.Repositories
     public class DoctorRepository
     {
         DoctorWhoCoreDbContext context = new DoctorWhoCoreDbContext();
-        public void AddDoctor()
+        public int AddDoctor(string doctorName,int doctorNumber,DateTime birthDate,DateTime firstEpisodeDate,DateTime lastEpisodeDate)
         {
             Doctor doctor = new Doctor()
             {
-                DoctorName = "Ms Julie",
-                DoctorNumber = 4,
-                BirthDate = new DateTime(1989, 6, 8),
-                FirstEpisodeDate = new DateTime(2006, 5, 8),
-                LastEpisodeDate = new DateTime(2006, 11, 6)
+                DoctorName = doctorName,
+                DoctorNumber = doctorNumber,
+                BirthDate = birthDate,
+                FirstEpisodeDate = firstEpisodeDate,
+                LastEpisodeDate =lastEpisodeDate
             };
             var result = context.Doctors.Add(doctor);
-            context.SaveChanges();
+           return context.SaveChanges();
         }
-        public void DeleteDoctor(int id)
+        public int DeleteDoctor(int id)
         {
             var result = context.Doctors.FromSqlInterpolated($"DELETE FROM Doctors WHERE DoctorId={id}");
-            context.SaveChanges();
+           return context.SaveChanges();
 
         }
         public Doctor GetDoctor(int id)

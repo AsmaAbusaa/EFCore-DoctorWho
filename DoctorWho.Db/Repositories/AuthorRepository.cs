@@ -6,28 +6,28 @@ namespace DoctorWho.Db.Repositories
     public class AuthorRepository
     {
         DoctorWhoCoreDbContext context = new DoctorWhoCoreDbContext();
-        public void AddAuthor()
+        public int AddAuthor(string name)
         {
             Author author = new Author()
             {
-                AuthorName = "Author"
+                AuthorName = name
             };
             var result = context.Authors.Add(author);
-            context.SaveChanges();
+         return context.SaveChanges();
         }
 
-        public void UpdateAuthor()
+        public int UpdateAuthor(int id,string newName)
         {
-            var author = context.Authors.Find(5);
+            var author = context.Authors.Find(id);
             if (author != null)
-                author.AuthorName = "Alexxx";
-            context.SaveChanges();
+                author.AuthorName = newName;
+            return context.SaveChanges();
         }
 
-        public void DeleteAuthor(int id)
+        public int DeleteAuthor(int id)
         {
             var result = context.Authors.FromSqlInterpolated($"DELETE FROM Authors WHERE AuthorId={id}");
-            context.SaveChanges();
+           return context.SaveChanges();
         }
         public Author GetAuthor(int id)
         {

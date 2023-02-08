@@ -6,20 +6,20 @@ namespace DoctorWho.Db.Repositories
     internal class CompanionRepository
     {
         DoctorWhoCoreDbContext context = new DoctorWhoCoreDbContext();
-        public void AddCompanion()
+        public int AddCompanion(string companionName,string whoPlayed)
         {
             Companion companion = new Companion()
             {
-                CompanionName = "Polly",
-                WhoPlayed = "Alex"
+                CompanionName = companionName,
+                WhoPlayed = whoPlayed
             };
             var returnValue = context.Companions.Add(companion);
-            context.SaveChanges();
+            return context.SaveChanges();
         }
-        public void DeleteCompanion(int id)
+        public int DeleteCompanion(int id)
         {
             var result = context.Companions.FromSqlInterpolated($"DELETE FROM Companions WHERE CompanionId={id}");
-            context.SaveChanges();
+           return context.SaveChanges();
         }
         public Companion GetCompanionById(int id)
         {
@@ -29,12 +29,15 @@ namespace DoctorWho.Db.Repositories
             throw new Exception("Not Found");
 
         }
-        public void UpdateCompanionName(int id, string newName)
+        public int UpdateCompanion(int id, string newName,string newActor)
         {
             var companion = context.Companions.Find(id);
             if (companion != null)
+            {
                 companion.CompanionName = newName;
-            context.SaveChanges();
+                companion.WhoPlayed = newActor;
+            }
+          return  context.SaveChanges();
         }
 
     }

@@ -1,34 +1,67 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DoctorWho.Db.DataModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace DoctorWho.Db.Repositories
 {
     public class EnemyEpisodeRepository
     {
         DoctorWhoCoreDbContext context = new DoctorWhoCoreDbContext();
-        public int AddExistEnemyToEpisode()
+        public int AddEnemyToEpisode(int enemyId, int episodeId)
         {
-            var episode = context.Episodes.FirstOrDefault(x => x.EpisodeId == 1300);
-            var enemy = context.Enemies.FirstOrDefault(c => c.EnemyId == 106);
+            var episode = context.Episodes.Find(episodeId);
+            var enemy = context.Enemies.Find(enemyId);
+
             if (episode != null && enemy != null)
                 episode.Enemies.Add(enemy);
-
             return context.SaveChanges();
         }
 
-        public int ReAssignEnemyEpsiode()
+        //In Memory Object
+        public int AddEnemyToEpisode(Enemy enemy, Episode episode)
         {
-            var oldEpisode = context.Episodes
-                                    .Include(s => s.Enemies.Where(s => s.EnemyId == 106))
-                                    .FirstOrDefault(e => e.EpisodeId == 1300);
-            var newEpisode = context.Episodes.Find(302);
-            if (oldEpisode != null && newEpisode != null)
-            {
-                var enemy = oldEpisode.Enemies.ElementAt(0);
-                oldEpisode.Enemies.Remove(enemy);
-                newEpisode.Enemies.Add(enemy);
-            }
+            episode.Enemies.Add(enemy);
             return context.SaveChanges();
         }
+
+        public int UnAssignEnemyToEpiasode(int episodeId, int enemyId)
+        {
+            var result = context.EnemyEpisode.FirstOrDefault
+                (
+                e => e.EpisodeId == episodeId && e.EnemyId == enemyId
+                );
+            if (result != null)
+                context.Remove(result);
+
+            return context.SaveChanges();
+        }
+
+        public int ReAssignEnemyEpisode(int oldEpisodeId,int enemyId, int newEpisodeId)
+        {
+            Episode oldEpisode,newEpisode;
+            Enemy enemy;
+               var oldEnemyEpisode = context.EnemyEpisode
+                .FirstOrDefault(
+                e => e.EpisodeId == oldEpisodeId && e.EnemyId == enemyId
+                );
+            if (oldEnemyEpisode != null)
+            {
+                oldEpisode = context.Episodes.Find(oldEpisodeId);
+                enemy = context.Enemies.Find(enemyId);
+
+                context.EnemyEpisode.Remove(oldEnemyEpisode);
+                oldEpisode.Enemies.Remove(enemy);
+                
+                newEpisode = context.Episodes.Find(newEpisodeId);
+                if (newEpisode != null)
+                    newEpisode.Enemies.Add(enemy);
+
+                context.EnemyEpisode.Add(new EnemyEpisode { Episode = newEpisode, Enemy = enemy });
+
+            }
+
+            return context.SaveChanges();
+        }
+
 
     }
 }

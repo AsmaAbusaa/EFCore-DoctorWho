@@ -5,38 +5,40 @@ namespace DoctorWho.Db.Repositories
     public class EpisodeRepository
     {
         DoctorWhoCoreDbContext context = new DoctorWhoCoreDbContext();
-        public int AddEpisode()
+        public int AddEpisode(int episodeNumber,string type,
+                              DateTime episodeDate,string title,int authorId,int doctorId,int sereiesNumber)
         {
             context.Episodes.Add(
                new Episode
                {
-                   EpisodeType = "Action",
-                   EpisodeDate = DateTime.Now,
-                   EpisodeNumber = 7,
-                   AuthorId = 1000,
-                   DoctorId = 205,
-                   Title = "LIFE",
-                   SeriesNumber = 8
+                   EpisodeType = type,
+                   EpisodeDate = episodeDate,
+                   EpisodeNumber = episodeNumber,
+                   AuthorId = authorId,
+                   DoctorId = doctorId,
+                   Title = title,
+                   SeriesNumber =sereiesNumber
                });
-            var result = context.SaveChanges();
-            return result;
+            return context.SaveChanges();   
+        }
+        
+        public int AddEpisode(Episode episode)
+        {
+            context.Episodes.Add(episode);
+            return context.SaveChanges();
         }
         public int DeleteEpisode(int id)
         {
             var episode = context.Episodes.Find(id);
             if (episode != null)
                 context.Episodes.Remove(episode);
-            else throw new Exception("Not Found");
-            var result = context.SaveChanges();
-            return result;
+          
+            return context.SaveChanges();    
         }
-        public int UpdateEpisodeTypeToCanceld(int id)
+        public int UpdateEpisode(Episode episode)
         {
-            var episode = context.Episodes.Find(id);
-            if (episode != null)
-                episode.EpisodeType = "Canceld";
-            var result = context.SaveChanges();
-            return result;
+           context.Update(episode);
+            return context.SaveChanges();
         }
     }
 }

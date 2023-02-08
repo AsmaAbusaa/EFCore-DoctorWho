@@ -71,17 +71,3 @@ void ExecuteSProcedure()
     conn.Close();
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-

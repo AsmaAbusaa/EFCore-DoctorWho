@@ -1,6 +1,5 @@
 ﻿using DoctorWho.Db.DataModels;
 using Microsoft.EntityFrameworkCore;
-using System.Data.Entity.Core.Objects;
 
 namespace DoctorWho.Db;
 public class DoctorWhoCoreDbContext : DbContext
@@ -10,19 +9,9 @@ public class DoctorWhoCoreDbContext : DbContext
     public DbSet<Doctor> Doctors { get; set; }
     public DbSet<Companion> Companions { get; set; }
     public DbSet<Enemy> Enemies { get; set; }
+    public DbSet<EnemyEpisode> EnemyEpisode { get; set; }
+    public DbSet<CompanionEpisode> CompanionEpisode { get; set; }
     public DbSet<ReportEpisode> viewReport { get; set; }
-
-
-    //private static ObjectContext CreateObjectContext()
-    //{
-    //    var entityBuilder = new EntityConnectionStringBuilder();
-
-    //    entityBuilder.Provider = "System.Data.SqlClient";
-    //    entityBuilder.ProviderConnectionString = "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = DoctorWhoCore";
-    //    entityBuilder.Metadata = @"metadata=res://*/Model.SMCSModel.csdl|res://*/Model.SMCSModel.ssdl|res://*/Model.SMCSModel.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=SANDIEGO\sql2008;initial catalog=SCMS;integrated security=True;multipleactiveresultsets=True;application name=EntityFramework&quot;";
-    //    return new ObjectContext(entityBuilder.ToString());
-    //}
-
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -37,10 +26,6 @@ public class DoctorWhoCoreDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ReportEpisode>().HasNoKey().ToView("viewReport");
-
-        //modelBuilder.HasDbFunction(typeof(DoctorWhoCoreDbContext)
-        //            .GetMethod(nameof(GetEnemiesByEpisodeId), new[] { typeof(int) }))
-        //            .HasName("fnEnemies");
 
         List<Doctor> doctors = new List<Doctor>
         {
@@ -99,6 +84,30 @@ public class DoctorWhoCoreDbContext : DbContext
         };
         modelBuilder.Entity<Episode>().HasData(episodes);
 
+        //Explicit Join Entity
+        modelBuilder.Entity<Episode>()
+            .HasMany(a => a.Enemies)
+            .WithMany(e => e.Episodes)
+            .UsingEntity<EnemyEpisode>
+            (
+             e => e.HasOne(e => e.Enemy).WithMany(),
+             e => e.HasOne(e => e.Episode).WithMany()
+            );
+        modelBuilder.Entity<Episode>()
+            .HasMany(c => c.Companions)
+            .WithMany(e => e.Episodes)
+            .UsingEntity<CompanionEpisode>(
+            c=>c.HasOne(c=>c.Companion).WithMany(),
+            e=>e.HasOne(e=>e.Episode).WithMany()
+            );
+        modelBuilder.Entity<EnemyEpisode>()
+                         .Property(e=>e.EpisodeId).HasColumnName("EpisodesEpisodeId");
+        modelBuilder.Entity<EnemyEpisode>()
+                     .Property(x=>x.EnemyId).HasColumnName("EnemiesEnemyId");
+        modelBuilder.Entity<CompanionEpisode>()
+            .Property(c => c.CompanionId).HasColumnName("CompanionsCompanionId");
+        modelBuilder.Entity<CompanionEpisode>()
+            .Property(e => e.EpisodeId).HasColumnName("EpisodesEpisodeId");
     }
     [DbFunction("fnEnemies", "dbo")]
     public static string GetEnemiesByEpisodeId(int id) => throw new NotSupportedException();

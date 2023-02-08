@@ -5,22 +5,22 @@ namespace DoctorWho.Db.Repositories
     public class EnemyRepository
     {
         DoctorWhoCoreDbContext context = new DoctorWhoCoreDbContext();
-        public void AddEnemy()
+        public int AddEnemy(string enemyName,string description)
         {
             Enemy enemy = new Enemy()
             {
-                EnemyName = "XEnemy",
-                Description = "XEnemy is an Enemy"
+                EnemyName = enemyName,
+                Description = description
             };
-            var result = context.Enemies.Add(enemy);
-            context.SaveChanges();
+           context.Enemies.Add(enemy);
+          return context.SaveChanges();
         }
-        public void DeleteEnemy(int id)
+        public int DeleteEnemy(int id)
         {
             var enemy = context.Enemies.Find(id);
             if (enemy != null)
                 context.Enemies.Remove(enemy);
-            context.SaveChanges();
+          return context.SaveChanges();
         }
         public Enemy GetEnemyById(int id)
         {
@@ -31,6 +31,16 @@ namespace DoctorWho.Db.Repositories
                 return enemy;
             }
             throw new Exception("Not Found");
+        }
+        public int UpdateEnemy(int id, string enemyName,string descripton)
+        {
+            var enemy=context.Enemies.Find(id);
+            if (enemy != null) 
+            {
+                enemy.Description = descripton;
+                enemy.EnemyName = enemyName;
+            }
+         return context.SaveChanges();
         }
 
     }
