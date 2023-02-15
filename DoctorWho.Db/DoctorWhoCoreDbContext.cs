@@ -110,10 +110,10 @@ public class DoctorWhoCoreDbContext : DbContext
             .Property(e => e.EpisodeId).HasColumnName("EpisodesEpisodeId");
     }
     [DbFunction("fnEnemies", "dbo")]
-    public static string GetEnemiesByEpisodeId(int id) => throw new NotSupportedException();
+    public string GetEnemiesByEpisodeId(int id) => throw new NotSupportedException();
 
     [DbFunction("fnCompanions", "dbo")]
-    public static string GetCompanionsByEpisodeId(int id) => throw new NotSupportedException();
+    public string GetCompanionsByEpisodeId(int id) => throw new NotSupportedException();
 
 
 }

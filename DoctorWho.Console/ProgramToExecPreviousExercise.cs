@@ -20,23 +20,20 @@ void GetEnemiesNameByID(int id)
     var result = context.Episodes
                   .Where(e => e.EpisodeId == id)
                   .Select
-                  (a => new
-                  {
-                      EnemiesName = DoctorWhoCoreDbContext.GetEnemiesByEpisodeId(id)
-                  }
+                  (a => context.GetEnemiesByEpisodeId(id)
                   ).ToList();
 }
 
+GetCompanionsNameByID(301);
 void GetCompanionsNameByID(int id)
 {
     var result = context.Episodes
                 .Where(e => e.EpisodeId == id)
                 .Select
-                (a => new
-                {
-                    CommpanionsName = DoctorWhoCoreDbContext.GetCompanionsByEpisodeId(id)
-                }
+                (a => context.GetCompanionsByEpisodeId(id)
                 ).ToList();
+    foreach (var x in result) Console.WriteLine(x);
+
 }
 
 //ExecuteSProcedure();
